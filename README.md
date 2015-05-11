@@ -6,7 +6,7 @@ Introduction
 
 This quasi-backend coerces PowerDNS into serving forward and reverse IP
 mappings based on a printf format and cidr ranges. This is done via PostgreSQL,
-which has nice ip address handing functions.
+which has nice ip address handling functions.
 
 Rather than having millions of forward and reverse records, you merely define
 two rows of authority, one or more template strings, then a few rows of CIDR's.
@@ -25,6 +25,12 @@ No other records are present in the sub-domain.
 
 \* Depending on how fast a function() call is vs a lookup on 10+ million
 record table. A high TTL might also be appropriate and helpful.
+
+Why not $GENERATE?
+------------------
+
+Bind does have a $GENERATE directive. Which is useful for x.x.x.x/24 but
+not (as far as I can tell for) x.x.x.x/(1-23).
 
 WARNING
 -------
@@ -90,6 +96,11 @@ neutered with "AND 1=0"
 
 The pdns.conf file included names this gpgsql instance as 'cpe', another
 'normal' gpgsql can easily be used in parallel.
+
+x.x.x.on-addr.arpa are generated on octect boundaries. Overlaps arent handled
+
+It seems that /24 is the minimum you can delefate for a PTR. This is enforced
+in cpe_ranges.
 
 TODO
 ----
