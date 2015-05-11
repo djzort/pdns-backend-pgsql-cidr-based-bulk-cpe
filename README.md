@@ -15,6 +15,14 @@ I thought about doing it via the lua backend or a new c++ backend, but I still
 needed to provide a store for the data - so PostgreSQL seemed like a reasonable
 vehicle for an experiment / proof of concept.
 
+The use case is for internet providers who need huge numbers of forward and
+reverse mappings based on IP address. Cloud providers might also have a similar
+use case. Consequently, blazing performance* is traded for convenience of
+configuration.
+
+* Depending on how fast a function() call is vs a lookup on 10+ million
+record table. A high TTL might also be appropriate and helpful.
+
 WARNING
 -------
 
@@ -74,6 +82,7 @@ neutered with "AND 1=0".
 TODO
 ----
 
+* Allow highest and lowest (i.e. network and broadcast IP) to be special case
 * Map all of the queries to something appropriate
 * Ensure that everything PowerDNS might do is mapped to something sane
 * Refine the PostgreSQL functions for performance and sanity
