@@ -98,9 +98,10 @@ The pdns.conf file included names this gpgsql instance as 'cpe', another
 'normal' gpgsql can easily be used in parallel.
 
 x.x.x.on-addr.arpa are generated on octect boundaries. Overlaps arent handled
+properly (send a pull reqest, table level enforcement would be fine)
 
-It seems that /24 is the minimum you can delefate for a PTR. This is enforced
-in cpe_ranges.
+It seems that /24 is the minimum you can delegate for a PTR. This is enforced
+in cpe_ranges table.
 
 TODO
 ----
