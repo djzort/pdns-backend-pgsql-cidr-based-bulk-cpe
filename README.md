@@ -11,7 +11,7 @@ which has nice ip address handing functions.
 Rather than having millions of forward and reverse records, you merely define
 two rows of authority, one or more template strings, then a few rows of CIDR's.
 
-I thought about doing it via the lua backend or a new c++ backend, but I still
+I considered doing it via the lua backend or a new c++ backend, but I still
 needed to provide a store for the data - so PostgreSQL seemed like a reasonable
 vehicle for an experiment / proof of concept.
 
@@ -20,7 +20,10 @@ reverse mappings based on IP address. Cloud providers might also have a similar
 use case. Consequently, blazing performance* is traded for convenience of
 configuration.
 
-* Depending on how fast a function() call is vs a lookup on 10+ million
+It is assumed that an entire sub-domain will be consumed by this auto-naming.
+No other records are present in the sub-domain.
+
+\* Depending on how fast a function() call is vs a lookup on 10+ million
 record table. A high TTL might also be appropriate and helpful.
 
 WARNING
@@ -37,18 +40,25 @@ This is intended for PostgreSQL 9.1+. The ip4r extension is used
 along with PostgreSQL's native ip addressiing functions. MySQL
 doesnt have network adress functions, so don't ask :P
 
+<pre>
+ apt-get install pdns-backend-pgsql
+ # or download from, https://www.powerdns.com/downloads.html
+ # IMO, avoid powerdns in EPEL due to age
  su postgres
  createuser -W
  # u: pdns p: pdns, no other privileges
  createdb pdns
  psql pdns < ./schema
+</pre>
 
 Test with:
 
+<pre>
  #cd to same directory as pdns.conf
  pdns_server --daemon=no --query-logging=yes --loglevel=10 --config-dir=.
  nslookup 100.68.123.250 127.0.0.1
  nslookup cnat-100-68-123-250.cnat.acme.com. 127.0.0.1
+</pre>
 
 Table Structure
 ---------------
@@ -57,7 +67,6 @@ Table Structure
  * cpe_ranges - ip range cidrs are defined here, and reference cpe_formats.id
  * cpe_authorites - authorities here define universally for all cids and formats
  * cpe_comainmetadata - this keeps powerdns happy. just leave it empty
-
 
 Notes
 -----
@@ -77,7 +86,10 @@ their own local postgresql database which is kept up to date outside of pdns
 domain_id's are an integer which is crudely generated based on the domain name.
 PowerDNS seems happy enough with this (even with negative integers). On the
 downside, PowerDNS really wants to run 'update' queries, which for now are
-neutered with "AND 1=0".
+neutered with "AND 1=0"
+
+The pdns.conf file included names this gpgsql instance as 'cpe', another
+'normal' gpgsql can easily be used in parallel.
 
 TODO
 ----
