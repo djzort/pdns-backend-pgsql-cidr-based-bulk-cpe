@@ -54,7 +54,7 @@ doesnt have network adress functions, so don't ask :P
  createuser -W
  # u: pdns p: pdns, no other privileges
  createdb pdns
- psql pdns < ./schema
+ psql pdns < ./schema.sql
 </pre>
 
 Test with:
